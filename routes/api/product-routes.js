@@ -1,4 +1,4 @@
-// Post request doesnt work
+// Done!
 
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
@@ -44,6 +44,7 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+//  i have absolutely no idea why, but this is working now??
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -108,8 +109,15 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
+  try {
+    const deleted = await Product.destroy({ where: {id: req.params.id} })
+    res.status(200).json(deleted)
+  }
+  catch (err) {
+    res.status(500).json(err)
+  }
 });
 
 module.exports = router;
